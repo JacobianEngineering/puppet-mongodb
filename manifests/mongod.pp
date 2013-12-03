@@ -33,7 +33,7 @@ define mongodb::mongod (
     $conf = {
         user        => $mongodb::params::run_as_user,
         homedir     => $homedir,
-        datadir     => $dbdir,
+        datadir     => $datadir,
         logdir      => $logdir,
         configfile  => "/etc/mongod_${mongod_instance}.conf"
     }
