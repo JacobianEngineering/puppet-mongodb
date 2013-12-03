@@ -24,7 +24,7 @@ define mongodb::mongod (
     if($mongod_basedir == undef) {
         $homedir = "${mongodb::params::homedir}/${mongod_instance}"
     } else {
-        $homedir = "${mongd_basedir}/${mongod_instance}"
+        $homedir = "${mongod_basedir}/${mongod_instance}"
     }
     
     $datadir = "${homedir}/data"
