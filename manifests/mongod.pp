@@ -14,20 +14,26 @@ define mongodb::mongod (
     $mongod_auth = false,
     $mongod_useauth = false,
     $mongod_monit = false,
-    $mongod_add_options = ''
+    $mongod_add_options = '',
+    $mongod_basedir = undef
 ) {
 
     # REVIEW: if not included specs won't get variables from the class, exp: $mongodb::params::homedir = null
     include mongodb::params
 
-    $homedir = "${mongodb::params::homedir}/${mongod_instance}"
+    if($mongod_basedir == undef) {
+        $homedir = "${mongodb::params::homedir}/${mongod_instance}"
+    } else {
+        $homedir = "${mongd_basedir}/${mongod_instance}"
+    }
+    
     $datadir = "${homedir}/data"
     $logdir  = "${homedir}/log"
 
     $conf = {
         user        => $mongodb::params::run_as_user,
         homedir     => $homedir,
-        datadir     => $datadir,
+        datadir     => $dbdir,
         logdir      => $logdir,
         configfile  => "/etc/mongod_${mongod_instance}.conf"
     }

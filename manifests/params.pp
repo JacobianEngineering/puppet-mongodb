@@ -44,6 +44,12 @@ class mongodb::params {
 
     $homedir = "/opt/mongodb"
 
+    #Todo: reserach default data folder for mongo on redhat
+    $dbdir = $::osfamily ? {
+        debian  => '/var/lib/mongodb',
+        redhat  => '/var/lib/mongo',
+    }
+
     # directory for mongo logfiles
 
     $logdir = $::osfamily ? {
