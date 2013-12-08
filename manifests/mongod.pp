@@ -55,6 +55,14 @@ define mongodb::mongod (
             require => Anchor['mongodb::install::end'],
             before  => Anchor["mongod::${mongod_instance}::files"];
 
+        "/etc/init.d/mongod_${mongod_instance}.conf":
+            ensure => 'link',
+            target => "/etc/init/mongod_${mongod_instance}.conf",
+            require => [ 
+                File[ "/etc/init/mongod_${mongod_instance}.conf" ],
+                Anchor['mongodb::install::end'],
+            before  => Anchor["mongod::${mongod_instance}::files"];
+
         "${homedir}":
             ensure  => directory,
             mode    => '0755',
