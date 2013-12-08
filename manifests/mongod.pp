@@ -57,7 +57,7 @@ define mongodb::mongod (
 
         "/etc/init.d/mongod_${mongod_instance}.conf":
             ensure => 'link',
-            target => "/etc/init/mongod_${mongod_instance}.conf",
+            target => "/etc/init/mongod_${mongod_instance}",
             require => [ 
                 File[ "/etc/init/mongod_${mongod_instance}.conf" ],
                 Anchor['mongodb::install::end'],
