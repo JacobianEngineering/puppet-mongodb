@@ -61,6 +61,7 @@ define mongodb::mongod (
             require => [ 
                 File[ "/etc/init/mongod_${mongod_instance}.conf" ],
                 Anchor['mongodb::install::end'],
+                ],
             before  => Anchor["mongod::${mongod_instance}::files"];
 
         "${homedir}":
