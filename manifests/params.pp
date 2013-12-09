@@ -42,7 +42,7 @@ class mongodb::params {
 
     $logrotatenumber = 7
 
-    $homedir = "/opt/mongodb"
+    $homefdir = "/opt/mongodb"
 
     # directory for mongo logfiles
 

@@ -9,8 +9,27 @@ define mongodb::mongos (
     $mongos_logappend = true,
     $mongos_fork = true,
     $mongos_useauth = false,
-    $mongos_add_options = ''
+    $mongos_add_options = '',
+    $mongos_basedir = undef
 ) {
+    
+    if($mongod_basedir == undef) {
+        $homedir = "${mongodb::params::homedir}/${mongos_instance}"
+    } else {
+        $homedir = "${mongos_basedir}/${mongos_instance}"
+    }
+    
+    $datadir = "${homedir}/data"
+    $logdir  = "${homedir}/log"
+
+    $conf = {
+        user        => $mongodb::params::run_as_user,
+        homedir     => $homedir,
+        datadir     => $datadir,
+        logdir      => $logdir,
+        configfile  => "/etc/mongos_${mongod_instance}.conf"
+    }
+
     file {
         "/etc/mongos_${mongos_instance}.conf":
             content => template('mongodb/mongos.conf.erb'),
