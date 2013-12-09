@@ -23,13 +23,19 @@ class mongodb::install {
     user { $mongodb::params::run_as_user:
         ensure   => present,
         comment  => 'MongoDB user',
-        require  => Anchor['mongodb::install::begin'],
+        require  => [ 
+            Anchor['mongodb::install::begin'],
+            Package['mongodb-10gen'],
+            ],
         before   => Anchor['mongodb::install::end']
     }
 
     group { $mongodb::params::run_as_group:
         ensure   => present,
-        require  => Anchor['mongodb::install::begin'],
+        require  => [ 
+            Anchor['mongodb::install::begin'],
+            Package['mongodb-10gen'],
+            ],
         before   => Anchor['mongodb::install::end']
     }
 
