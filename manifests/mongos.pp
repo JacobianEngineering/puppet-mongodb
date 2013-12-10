@@ -27,7 +27,7 @@ define mongodb::mongos (
         homedir     => $homedir,
         datadir     => $datadir,
         logdir      => $logdir,
-        configfile  => "/etc/mongos_${mongos_instance}.conf"
+        configfile  => "/etc/mongos_${mongos_instance}.conf",
         instanceName => "${mongos_instance}"
     }
 
