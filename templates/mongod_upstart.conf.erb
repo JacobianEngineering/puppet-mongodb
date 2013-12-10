@@ -16,6 +16,6 @@ script
           rm $HOMEDIR/mongod.lock
           sudo -u $DBUSER /usr/bin/mongod --config $CONFIG_FILE --repair
   fi
-  exec start-stop-daemon --start --quiet --pidfile $HOMEDIR/mongo.pid --chuid $DBUSER --exec  /usr/bin/mongod -- --pidfilepath $HOMEDIR --config $CONFIG_FILE
+  exec start-stop-daemon --start --quiet --pidfile $HOMEDIR/mongo.pid --chuid $DBUSER --exec  /usr/bin/mongod -- --config $CONFIG_FILE
 
 end script

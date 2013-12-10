@@ -4,13 +4,15 @@
 dbpath=<%= @conf['datadir'] %>
 
 logpath=<%= @conf['logdir'] %>/mongo.log
-syslog=true
+#syslog=true
 
 logappend=<%= @mongod_logappend %>
 
 rest=<%= @mongod_rest %>
 
 fork=<%= @mongod_fork %>
+
+pidfilepath=<%= @conf['homedir'] %>
 
 <% if @mongod_shardsvr != false -%>
 shardsvr=<%= @mongod_shardsvr %>
