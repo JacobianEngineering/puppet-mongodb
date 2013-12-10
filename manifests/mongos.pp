@@ -13,7 +13,7 @@ define mongodb::mongos (
     $mongos_basedir = undef
 ) {
     
-    if($mongod_basedir == undef) {
+    if($mongos_basedir == undef) {
         $homedir = "${mongodb::params::homedir}/${mongos_instance}"
     } else {
         $homedir = "${mongos_basedir}/${mongos_instance}"
