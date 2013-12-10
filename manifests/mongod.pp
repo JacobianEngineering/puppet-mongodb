@@ -36,6 +36,7 @@ define mongodb::mongod (
         datadir     => $datadir,
         logdir      => $logdir,
         configfile  => "/etc/mongod_${mongod_instance}.conf"
+        instanceName => "${mongod_instance}"
     }
 
     anchor { "mongod::${mongod_instance}::files": }

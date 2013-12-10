@@ -5,17 +5,15 @@ stop on runlevel [06]
 
 limit nofile 20000 20000
 
+expect daemon
+
 script
 
   HOMEDIR=<%= @conf['homedir'] %>
   DBUSER=<%= @conf['user'] %>
   CONFIG_FILE=<%= @conf['configfile'] %>
+  PIDFILE=/var/run/mongodb/<%= @conf['instanceName'] %>.pid
 
-
-  if [ -f $HOMEDIR/mongod.lock ]; then
-          rm $HOMEDIR/mongod.lock
-          sudo -u $DBUSER /usr/bin/mongod --config $CONFIG_FILE --repair
-  fi
-  exec start-stop-daemon --start --quiet --pidfile $HOMEDIR/mongo.pid --chuid $DBUSER --exec  /usr/bin/mongod -- --config $CONFIG_FILE
+  exec start-stop-daemon --start --quiet --pidfile $PIDFILE --chuid $DBUSER --exec  /usr/bin/mongod -- --config $CONFIG_FILE
 
 end script

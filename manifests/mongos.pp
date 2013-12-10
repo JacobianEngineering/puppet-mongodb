@@ -28,6 +28,7 @@ define mongodb::mongos (
         datadir     => $datadir,
         logdir      => $logdir,
         configfile  => "/etc/mongos_${mongos_instance}.conf"
+        instanceName => "${mongos_instance}"
     }
 
     anchor { "mongos::${mongos_instance}::files": }
