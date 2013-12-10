@@ -27,45 +27,82 @@ define mongodb::mongos (
         homedir     => $homedir,
         datadir     => $datadir,
         logdir      => $logdir,
-        configfile  => "/etc/mongos_${mongod_instance}.conf"
+        configfile  => "/etc/mongos_${mongos_instance}.conf"
     }
+
+    anchor { "mongos::${mongos_instance}::files": }
 
     file {
         "/etc/mongos_${mongos_instance}.conf":
             content => template('mongodb/mongos.conf.erb'),
-            mode    => '0755',
+            mode    => '0644',
             # no auto restart of a db because of a config change
             #notify => Class['mongodb::service'],
-            require => Class['mongodb::install'];
+            require => Anchor['mongodb::install::end'],
+            before  => Anchor["mongos::${mongos_instance}::files"];
+
+        "/etc/init/mongos_${mongos_instance}.conf":
+            content => template('mongodb/mongos_upstart.conf.erb'),
+            mode    => '0644',
+            require => Anchor['mongodb::install::end'],
+            before  => Anchor["mongos::${mongos_instance}::files"];
+
         "/etc/init.d/mongos_${mongos_instance}":
-            content => $::osfamily ? {
-                debian => template('mongodb/debian_mongos-init.conf.erb'),
-                redhat => template('mongodb/redhat_mongos-init.conf.erb'),
-            },
+            ensure => 'link',
+            target => "/etc/init/mongos_${mongos_instance}.conf",
+            require => [ 
+                File[ "/etc/init/mongos_${mongos_instance}.conf" ],
+                Anchor['mongodb::install::end'],
+                ],
+            before  => Anchor["mongos::${mongos_instance}::files"];
+
+        "${homedir}":
+            ensure  => directory,
             mode    => '0755',
-            require => Class['mongodb::install'],
+            owner   => $mongodb::params::run_as_user,
+            group   => $mongodb::params::run_as_group,
+            require => Anchor['mongodb::install::end'];
+
+        "${datadir}":
+            ensure  => directory,
+            mode    => '0755',
+            owner   => $mongodb::params::run_as_user,
+            group   => $mongodb::params::run_as_group,
+            require => File["${homedir}"],
+            before  => Anchor["mongos::${mongos_instance}::files"];
+
+        "${logdir}":
+            ensure  => directory,
+            mode    => '0755',
+            owner   => $mongodb::params::run_as_user,
+            group   => $mongodb::params::run_as_group,
+            require => File["${homedir}"],
+            before  => Anchor["mongos::${mongos_instance}::files"];
+    }
+
+    mongodb::logrotate { "mongos_${mongos_instance}_logrotate":
+        instance => $mongos_instance,
+        logdir   => $logdir
+    }
+
+    service { "mongos_${mongos_instance}":
+        ensure     => $mongos_running,
+        enable     => $mongos_enable,
+        hasstatus  => true,
+        hasrestart => true,
+        require    => Anchor["mongos::${mongos_instance}::files"],
+        before     => Anchor['mongodb::end']
     }
 
     if ($mongos_useauth != false){
+        # ATTENTION: propably not working!!
         file { "/etc/mongos_${mongos_instance}.key":
             content => template('mongodb/mongos.key.erb'),
             mode    => '0700',
             owner   => $mongodb::params::run_as_user,
+            require => Anchor['mongodb::install::end'],
             notify  => Service["mongos_${mongos_instance}"],
         }
-    }
-
-    service {
-        "mongos_${mongos_instance}":
-            ensure     => $mongos_running,
-            enable     => $mongos_enable,
-            hasstatus  => true,
-            hasrestart => true,
-            require    => [
-                File["/etc/mongos_${mongos_instance}.conf", "/etc/init.d/mongos_${mongos_instance}"],
-                Service[$::mongodb::params::old_servicename]
-                ],
-                before => Anchor['mongodb::end']
-    }
+    }   
 }
 
