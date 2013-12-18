@@ -14,8 +14,6 @@ script
   CONFIG_FILE=<%= @conf['configfile'] %>
   PIDFILE=/var/run/mongodb/mongos_<%= @conf['instanceName'] %>.pid
 
-  expect fork
-
   exec start-stop-daemon --start --quiet --pidfile $PIDFILE --chuid $DBUSER --exec  /usr/bin/mongos -- --config $CONFIG_FILE
 
 end script
