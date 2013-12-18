@@ -83,7 +83,8 @@ define mongodb::mongos (
 
     mongodb::logrotate { "mongos_${mongos_instance}_logrotate":
         instance => $mongos_instance,
-        logdir   => $logdir
+        logdir   => $logdir,
+        require    => Anchor["mongod::${mongos_instance}::files"]
     }
 
     service { "mongos_${mongos_instance}":

@@ -10,7 +10,7 @@ define mongodb::logrotate($instance, $logdir) {
 
   file { "/etc/logrotate.d/mongodb_${instance}":
     content    => template('mongodb/logrotate.conf.erb'),
-    require    => [Package['logrotate'], Anchor["mongod::${instance}::files"]],
+    require    => [Package['logrotate'],
   }
 
 }
