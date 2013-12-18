@@ -12,7 +12,7 @@ script
   HOMEDIR=<%= @conf['homedir'] %>
   DBUSER=<%= @conf['user'] %>
   CONFIG_FILE=<%= @conf['configfile'] %>
-  PIDFILE=/var/run/mongodb/<%= @conf['instanceName'] %>.pid
+  PIDFILE=/var/run/mongodb/mongos_<%= @conf['instanceName'] %>.pid
 
   expect fork
 

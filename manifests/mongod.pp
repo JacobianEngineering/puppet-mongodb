@@ -91,7 +91,8 @@ define mongodb::mongod (
 
     mongodb::logrotate { "mongod_${mongod_instance}_logrotate":
         instance => $mongod_instance,
-        logdir   => $logdir
+        logdir   => $logdir,
+        require    => Anchor["mongod::${mongod_instance}::files"]
     }
 
     service { "mongod_${mongod_instance}":

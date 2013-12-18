@@ -9,7 +9,7 @@ logappend=<%= @mongos_logappend %>
 
 fork = <%= @mongos_fork %>
 
-pidfilepath=<%= @conf['homedir'] %>
+pidfilepath=/var/run/mongodb/mongos_<%= mongos_instance %>.pid
 
 <% if @mongos_bind_ip != "" %>
 bind_ip=<%= @mongos_bind_ip %>

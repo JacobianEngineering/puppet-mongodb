@@ -31,7 +31,7 @@ define mongodb::mongos (
         instanceName => "${mongos_instance}"
     }
 
-    anchor { "mongod::${mongos_instance}::files": }
+    anchor { "mongos::${mongos_instance}::files": }
 
     file {
         "/etc/mongos_${mongos_instance}.conf":
@@ -40,13 +40,13 @@ define mongodb::mongos (
             # no auto restart of a db because of a config change
             #notify => Class['mongodb::service'],
             require => Anchor['mongodb::install::end'],
-            before  => Anchor["mongod::${mongos_instance}::files"];
+            before  => Anchor["mongos::${mongos_instance}::files"];
 
         "/etc/init/mongos_${mongos_instance}.conf":
             content => template('mongodb/mongos_upstart.conf.erb'),
             mode    => '0644',
             require => Anchor['mongodb::install::end'],
-            before  => Anchor["mongod::${mongos_instance}::files"];
+            before  => Anchor["mongos::${mongos_instance}::files"];
 
         "/etc/init.d/mongos_${mongos_instance}":
             ensure => 'link',
@@ -55,7 +55,7 @@ define mongodb::mongos (
                 File[ "/etc/init/mongos_${mongos_instance}.conf" ],
                 Anchor['mongodb::install::end'],
                 ],
-            before  => Anchor["mongod::${mongos_instance}::files"];
+            before  => Anchor["mongos::${mongos_instance}::files"];
 
         "${homedir}":
             ensure  => directory,
@@ -70,7 +70,7 @@ define mongodb::mongos (
             owner   => $mongodb::params::run_as_user,
             group   => $mongodb::params::run_as_group,
             require => File["${homedir}"],
-            before  => Anchor["mongod::${mongos_instance}::files"];
+            before  => Anchor["mongos::${mongos_instance}::files"];
 
         "${logdir}":
             ensure  => directory,
@@ -78,13 +78,13 @@ define mongodb::mongos (
             owner   => $mongodb::params::run_as_user,
             group   => $mongodb::params::run_as_group,
             require => File["${homedir}"],
-            before  => Anchor["mongod::${mongos_instance}::files"];
+            before  => Anchor["mongos::${mongos_instance}::files"];
     }
 
     mongodb::logrotate { "mongos_${mongos_instance}_logrotate":
         instance => $mongos_instance,
         logdir   => $logdir,
-        require    => Anchor["mongod::${mongos_instance}::files"]
+        require    => Anchor["mongos::${mongos_instance}::files"]
     }
 
     service { "mongos_${mongos_instance}":
@@ -92,7 +92,7 @@ define mongodb::mongos (
         enable     => $mongos_enable,
         hasstatus  => true,
         hasrestart => true,
-        require    => Anchor["mongod::${mongos_instance}::files"],
+        require    => Anchor["mongos::${mongos_instance}::files"],
         before     => Anchor['mongodb::end']
     }
 
